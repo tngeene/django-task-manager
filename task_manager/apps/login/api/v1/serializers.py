@@ -31,4 +31,5 @@ class UserResponseSerializer(UserSerializer):
             "gender",
             "date_of_birth",
             "profile_picture",
+            "last_login",
         )
