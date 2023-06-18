@@ -1,0 +1,10 @@
+[flake8]
+; Taken from https://black.readthedocs.io/en/stable/compatible_configs.html#flake8
+
+extend-ignore = E203,E501,W503
+select = B,C,E,F,W,T4,B9
+
+# TODO: fix this
+max-line-length = 140
+
+max-complexity = 18
