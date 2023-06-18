@@ -220,3 +220,16 @@ CSRF_COOKIE_HTTPONLY = False
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# api auth settings
+DJOSER = {
+    "SERIALIZERS": {
+        "user_create": "task_manager.apps.login.api.v1.serializers.UserAccountCreateSerializer",
+        "user": "task_manager.apps.login.api.v1.serializers.UserResponseSerializer",
+        "current_user": "task_manager.apps.login.api.v1.serializers.UserResponseSerializer",
+    },
+    "LOGIN_FIELD": "email",
+    "SEND_ACTIVATION_EMAIL": False,
+    "PASSWORD_RESET_CONFIRM_URL": "auth/password/reset/{uid}/{token}",
+}
