@@ -10,4 +10,4 @@ __pycache__/
 .DS_Store
 db_m.py
 .python-version
-.pytest_cache
+.pytest_cache/

@@ -1,0 +1,37 @@
+FROM python:3.8.16
+
+ENV PYTHONUNBUFFERED 1
+RUN mkdir /code
+
+WORKDIR /code
+
+ENV PYTHONPATH=${PYTHONPATH}:${PWD}
+
+COPY pyproject.toml \
+    poetry.lock \
+    Makefile \
+    /code/
+
+# Upgrade pip to the latest version to stop any error messages
+RUN python3 -m pip install -U pip
+
+# poetry configs
+ENV POETRY_HOME="/opt/poetry" \
+    POETRY_VERSION=1.5.1
+
+ENV PATH="$POETRY_HOME/bin:$PATH"
+
+COPY . /code/
+COPY ./entrypoint.sh /entrypoint.sh
+# make the entry point file executable
+RUN chmod +x entrypoint.sh
+# install poetry
+RUN make install-poetry
+
+RUN make deps-prod
+# Django settings
+ENV DJANGO_SETTINGS_MODULE=task_manager.conf.settings.common
+
+EXPOSE 8000
+
+ENTRYPOINT ["./entrypoint.sh"]
