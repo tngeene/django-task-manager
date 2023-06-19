@@ -11,6 +11,11 @@ class UserAccount(AbstractUser):
     gender = models.CharField(
         max_length=10, choices=login_constants.GENDER_CHOICES
     )
+    role = models.TextField(
+        max_length=30,
+        choices=login_constants.UserRoleChoices.choices,
+        default=login_constants.UserRoleChoices.SUPPORT_STAFF,
+    )
     date_of_birth = models.DateField(null=True, blank=True)
     profile_picture = models.ImageField(
         upload_to="users/profile-pictures", blank=True, null=True

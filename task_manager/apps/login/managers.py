@@ -9,7 +9,7 @@ class UserAccountManager(UserManager):
             | models.Q(**{self.model.EMAIL_FIELD: username})
         )
 
-    # override create user method to accept email and phone number as username
+    # override create user method to accept email as the username field
     def create_user(self, email=None, password=None, **extra_fields):
         return super().create_user(email, email, password, **extra_fields)
 

@@ -15,6 +15,7 @@ class UserAccountCreateSerializer(UserCreateSerializer):
             "gender",
             "date_of_birth",
             "profile_picture",
+            "role",
             "password",
         )
 
@@ -28,6 +29,7 @@ class UserResponseSerializer(UserSerializer):
             "email",
             "first_name",
             "last_name",
+            "get_role_display",
             "gender",
             "date_of_birth",
             "profile_picture",
