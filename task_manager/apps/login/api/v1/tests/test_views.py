@@ -1,22 +1,27 @@
 import pytest
+from django.contrib.auth import get_user_model
+from django.urls import reverse
 from djoser.views import UserViewSet
-from rest_framework import status
+from rest_framework import exceptions, status
 
 from task_manager.api.tests.utils import force_authenticate
-from task_manager.apps.login.api.v1 import serializers
+
+User = get_user_model()
+
+
+USER_PASSWORD = "8W*irQ1M"
 
 
 @pytest.mark.django_db
-class TestUnauthenticatedUserView:
+class TestUnauthenticatedUserViewSet:
     @pytest.fixture
     def new_user_data(self):
         return {
             "email": "tugrp@example.com",
             "first_name": "New",
             "last_name": "User",
-            "gender": "Male",
-            "is_active": True,
-            "password": "new_user_password",
+            "gender": "male",
+            "password": USER_PASSWORD,
         }
 
     @pytest.fixture
@@ -31,14 +36,92 @@ class TestUnauthenticatedUserView:
         }
 
     def test_create_user(
-        self, drf_request_factory, expected_new_user_response, new_user_data
+        self,
+        drf_request_factory,
+        new_user_data,
+        api_request_headers,
+        expected_new_user_response,
     ):
+        """
+        Represent an ideal user creation request. User will be created successfully
+        """
         factory = drf_request_factory
-        payload = serializers.UserCreateSerializer(new_user_data).data
-        request = factory.post("/", payload)
-        view = UserViewSet.as_view(actions={"post": "perform_create"})
+        json_format = api_request_headers["format"]
+        url = reverse("useraccount-list")
+        request = factory.post(url, format=json_format, data=new_user_data)
+        view = UserViewSet.as_view(actions={"post": "create"})
+        # Authenticate the request without a specific user or token
+        force_authenticate(request)
         response = view(request)
-        breakpoint()
 
         assert status.HTTP_201_CREATED == response.status_code
         assert expected_new_user_response == response.data
+        assert User.objects.count() == 1
+
+    def test_create_user__common_password(
+        self,
+        drf_request_factory,
+        new_user_data,
+        api_request_headers,
+    ):
+        """
+        User created with a common password
+        """
+        factory = drf_request_factory
+        json_format = api_request_headers["format"]
+        url = reverse("useraccount-list")
+        new_user_data["password"] = "password123"
+
+        # with pytest.raises(ValidationError) as exc:
+        request = factory.post(url, format=json_format, data=new_user_data)
+        view = UserViewSet.as_view(actions={"post": "create"})
+        # Authenticate the request without a specific user or token
+        force_authenticate(request)
+        response = view(request)
+
+        expected_error_response = {
+            "password": [
+                exceptions.ErrorDetail(
+                    string="This password is too common.",
+                    code="password_too_common",
+                )
+            ]
+        }
+
+        assert status.HTTP_400_BAD_REQUEST == response.status_code
+        assert expected_error_response == response.data
+        assert User.objects.count() == 0
+
+    def test_create_user__missing_field(
+        self,
+        drf_request_factory,
+        new_user_data,
+        api_request_headers,
+    ):
+        """
+        Attempt to create a new user without an email address provided
+        """
+        factory = drf_request_factory
+        json_format = api_request_headers["format"]
+        url = reverse("useraccount-list")
+        new_user_data.pop("email")
+
+        # with pytest.raises(ValidationError) as exc:
+        request = factory.post(url, format=json_format, data=new_user_data)
+        view = UserViewSet.as_view(actions={"post": "create"})
+        # Authenticate the request without a specific user or token
+        force_authenticate(request)
+        response = view(request)
+
+        expected_error_response = {
+            "email": [
+                exceptions.ErrorDetail(
+                    string="This field is required.", code="required"
+                )
+            ]
+        }
+
+        assert status.HTTP_400_BAD_REQUEST == response.status_code
+        assert expected_error_response == response.data
+        # no user created
+        assert User.objects.count() == 0

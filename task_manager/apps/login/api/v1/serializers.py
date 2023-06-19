@@ -14,8 +14,8 @@ class UserAccountCreateSerializer(UserCreateSerializer):
             "last_name",
             "gender",
             "date_of_birth",
-            "password",
             "profile_picture",
+            "password",
         )
 
 

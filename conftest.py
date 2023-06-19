@@ -22,3 +22,11 @@ def drf_request_factory():
 @pytest.fixture
 def user():
     return login_factories.UserFactory()
+
+
+@pytest.fixture
+def api_request_headers():
+    return {
+        "content-type": "application/json",
+        "format": "json",
+    }
