@@ -41,7 +41,7 @@ deps: deps-clean
 .PHONY: deps-prod
 deps-prod:
 	poetry config virtualenvs.create false
-	poetry install --no-interaction --no-ansi --without dev
+	poetry install --no-interaction --no-ansi
 
 # Django commands
 .PHONY: runserver
