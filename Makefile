@@ -14,7 +14,7 @@ help:
 	@echo "  uninstall-poetry  	uninstalls poetry if things go wrong."
 	@echo "  pip-freeze  		output the contents of the pyproject.toml into a requirements.txt file"
 	@echo "  show_urls			output all defined program urls on the command line"
-	@echo "  test			    run all tests on the command line"
+	@echo "  tests			    run all tests on the command line"
 
 # poetry installation
 .PHONY: install-poetry

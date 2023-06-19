@@ -134,8 +134,10 @@ if IS_PRODUCTION:
 else:
     DATABASES = {
         "default": {
-            "ENGINE": env.str("DEV_DB_ENGINE"),
-            "NAME": env.str("DEV_DB_NAME"),
+            "ENGINE": env.str(
+                "DEV_DB_ENGINE", default="django.db.backends.sqlite3"
+            ),
+            "NAME": env.str("DEV_DB_NAME", default="db.sqlite3"),
         }
     }
 
