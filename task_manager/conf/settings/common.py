@@ -40,7 +40,7 @@ IS_PRODUCTION = env.bool("IS_PRODUCTION", default=False)
 
 ALLOWED_HOSTS = ["*"]
 
-FRONTEND_HOST = env.str("FRONTEND_HOST", default=None).rstrip("/")
+FRONTEND_HOST = env.str("FRONTEND_HOST", default="127.0.0.1/").rstrip("/")
 
 # CORS settingss
 CSRF_TRUSTED_ORIGINS = env.list(
