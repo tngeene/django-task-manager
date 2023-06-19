@@ -14,6 +14,7 @@ help:
 	@echo "  uninstall-poetry  	uninstalls poetry if things go wrong."
 	@echo "  pip-freeze  		output the contents of the pyproject.toml into a requirements.txt file"
 	@echo "  show_urls			output all defined program urls on the command line"
+	@echo "  tests			    run all tests on the command line"
 
 # poetry installation
 .PHONY: install-poetry
@@ -39,8 +40,7 @@ deps: deps-clean
 
 .PHONY: deps-prod
 deps-prod:
-	poetry config virtualenvs.create false
-	poetry install --no-interaction --no-ansi --without dev
+	poetry install --no-interaction --no-ansi
 
 # Django commands
 .PHONY: runserver
@@ -58,6 +58,10 @@ migrate: deps-clean
 .PHONY: superuser
 superuser: deps-clean
 	poetry run python manage.py createsuperuser
+
+.PHONY: tests
+tests: deps-clean
+	poetry run pytest
 
 # collect static files
 .PHONY: collectstatic

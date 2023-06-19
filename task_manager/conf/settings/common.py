@@ -40,7 +40,7 @@ IS_PRODUCTION = env.bool("IS_PRODUCTION", default=False)
 
 ALLOWED_HOSTS = ["*"]
 
-FRONTEND_HOST = env.str("FRONTEND_HOST").rstrip("/")
+FRONTEND_HOST = env.str("FRONTEND_HOST", default="127.0.0.1/").rstrip("/")
 
 # CORS settingss
 CSRF_TRUSTED_ORIGINS = env.list(
@@ -134,8 +134,10 @@ if IS_PRODUCTION:
 else:
     DATABASES = {
         "default": {
-            "ENGINE": env.str("DEV_DB_ENGINE"),
-            "NAME": env.str("DEV_DB_NAME"),
+            "ENGINE": env.str(
+                "DEV_DB_ENGINE", default="django.db.backends.sqlite3"
+            ),
+            "NAME": env.str("DEV_DB_NAME", default="db.sqlite3"),
         }
     }
 
@@ -183,12 +185,14 @@ MEDIA_ROOT = "media"
 
 
 # email configs
-EMAIL_HOST = env.str("EMAIL_HOST")
-EMAIL_BACKEND = env.str("EMAIL_BACKEND")
-EMAIL_PORT = env.int("EMAIL_PORT")
+EMAIL_HOST = env.str("EMAIL_HOST", default=None)
+EMAIL_BACKEND = env.str(
+    "EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend"
+)
+EMAIL_PORT = env.int("EMAIL_PORT", default=None)
 EMAIL_USE_TLS = env.bool("EMAIL_PORT", default=True)
-EMAIL_HOST_USER = env.str("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER = env.str("EMAIL_HOST_USER", default=None)
+EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD", default=None)
 DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL", default="admin@task.com")
 
 
