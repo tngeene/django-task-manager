@@ -5,6 +5,7 @@ from djoser.views import UserViewSet
 from rest_framework import exceptions, status
 
 from task_manager.api.tests.utils import force_authenticate
+from task_manager.apps.login import constants as login_constants
 
 User = get_user_model()
 
@@ -30,6 +31,7 @@ class TestUnauthenticatedUserViewSet:
             "email": new_user_data["email"],
             "first_name": new_user_data["first_name"],
             "last_name": new_user_data["last_name"],
+            "role": login_constants.UserRoleChoices.SUPPORT_STAFF.value,
             "gender": new_user_data["gender"],
             "date_of_birth": None,
             "profile_picture": None,
@@ -53,7 +55,6 @@ class TestUnauthenticatedUserViewSet:
         # Authenticate the request without a specific user or token
         force_authenticate(request)
         response = view(request)
-
         assert status.HTTP_201_CREATED == response.status_code
         assert expected_new_user_response == response.data
         assert User.objects.count() == 1
