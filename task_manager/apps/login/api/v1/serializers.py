@@ -24,6 +24,7 @@ class UserAccountCreateSerializer(UserCreateSerializer):
 # specify fields to be displayed for a user instance
 class UserResponseSerializer(UserSerializer):
     role = serializers.SerializerMethodField()
+    gender = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -41,3 +42,6 @@ class UserResponseSerializer(UserSerializer):
 
     def get_role(self, obj):
         return obj.get_role_display()
+
+    def get_gender(self, obj):
+        return obj.get_gender_display() if obj.gender else ""

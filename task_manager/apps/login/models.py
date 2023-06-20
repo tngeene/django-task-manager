@@ -9,7 +9,10 @@ from task_manager.apps.login import managers
 class UserAccount(AbstractUser):
     email = models.EmailField(unique=True)
     gender = models.CharField(
-        max_length=10, choices=login_constants.GENDER_CHOICES
+        max_length=10,
+        choices=login_constants.UserGenderChoices.choices,
+        null=True,
+        blank=True,
     )
     role = models.TextField(
         max_length=30,

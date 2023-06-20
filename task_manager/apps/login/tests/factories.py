@@ -1,22 +1,31 @@
 import datetime
 
+import factory
 from django.contrib.auth import get_user_model
-from factory import Faker, django, fuzzy, sequence
+from factory import fuzzy
 
-from task_manager.apps.login.constants import GENDER_CHOICES
+from task_manager.apps.login import constants as login_constants
 
 User = get_user_model()
 
+DATE_FORMAT = "%Y-%m-%d"
+START_DATE_STR = "1960-01-01"
+END_DATE_STR = "2005-12-31"
 
-class UserFactory(django.DjangoModelFactory):
+
+START_DATE = datetime.datetime.strptime(START_DATE_STR, DATE_FORMAT).date()
+END_DATE = datetime.datetime.strptime(END_DATE_STR, DATE_FORMAT).date()
+
+
+class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
-        django_get_or_create = ("username",)
 
-    email = sequence(lambda n: f"test{n}@taskmanager.com")
-    first_name = Faker("first_name")
-    last_name = Faker("last_name")
-    gender = fuzzy.FuzzyChoice(choices=GENDER_CHOICES)
-    date_of_birth = fuzzy.FuzzyDate(
-        datetime.date(1960, 1, 1)
-    ), datetime.datetime(2002, 12, 31)
+    email = factory.Sequence(lambda n: f"test{n}@taskmanager.com")
+    first_name = factory.Faker("first_name")
+    last_name = factory.Faker("last_name")
+    gender = fuzzy.FuzzyChoice(choices=login_constants.UserGenderChoices)
+    date_of_birth = fuzzy.FuzzyDate(START_DATE, END_DATE)
+    password = factory.PostGenerationMethodCall(
+        "set_password", "some_password!"
+    )

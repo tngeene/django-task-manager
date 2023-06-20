@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from djoser.views import UserViewSet
 from rest_framework import exceptions, status
+from rest_framework.authtoken.models import Token
+from rest_framework.test import APIClient
 
 from task_manager.api.tests.utils import force_authenticate
 from task_manager.apps.login import constants as login_constants
@@ -126,3 +128,49 @@ class TestUnauthenticatedUserViewSet:
         assert expected_error_response == response.data
         # no user created
         assert User.objects.count() == 0
+
+
+@pytest.mark.django_db
+class TestAuthenticatedUserViewSet:
+    @pytest.fixture(autouse=True)
+    def setup(self, user):
+        # Generate a token for the user
+        self.token = Token.objects.create(user=user)
+        # Create an APIClient instance for making authenticated requests
+        self.client = APIClient()
+        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
+
+    def test_user_list(self, expected_users_response_one_user):
+        url = reverse("useraccount-list")
+        response = self.client.get(url)
+        assert status.HTTP_200_OK == response.status_code
+        assert expected_users_response_one_user == response.json()
+
+    def test_currently_logged_in_user(
+        self, expected_users_response_current_user
+    ):
+        url = reverse("useraccount-me")
+        response = self.client.get(url)
+        user = User.objects.get(
+            email=expected_users_response_current_user["email"]
+        )
+        assert status.HTTP_200_OK == response.status_code
+        assert expected_users_response_current_user == response.json()
+        assert User.objects.count() == 1
+        assert response.json()["email"] == user.email
+
+    def test_user_response_user_id_passed(
+        self, expected_users_response_current_user
+    ):
+        url = reverse(
+            "useraccount-detail",
+            kwargs={"id": expected_users_response_current_user["id"]},
+        )
+        response = self.client.get(url)
+        user = User.objects.get(
+            email=expected_users_response_current_user["email"]
+        )
+        assert status.HTTP_200_OK == response.status_code
+        assert expected_users_response_current_user == response.json()
+        assert User.objects.count() == 1
+        assert response.json()["email"] == user.email

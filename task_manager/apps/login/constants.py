@@ -1,11 +1,11 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-GENDER_CHOICES = [
-    ("male", "male"),
-    ("female", "female"),
-    ("Other", "Other"),
-]
+
+class UserGenderChoices(models.TextChoices):
+    MALE = "MALE", _("Male")
+    FEMALE = "FEMALE", _("Female")
+    OTHER = "OTHER", _("Other")
 
 
 class UserRoleChoices(models.TextChoices):
