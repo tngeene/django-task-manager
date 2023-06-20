@@ -13,9 +13,9 @@ class Board(django_filters.FilterSet):
         }
 
 
-class VehicleFilter(django_filters.FilterSet):
+class TaskFilter(django_filters.FilterSet):
     class Meta:
-        model = task_models.Board
+        model = task_models.Task
         fields = {
             "title": ["icontains"],
             "status": ["exact"],
