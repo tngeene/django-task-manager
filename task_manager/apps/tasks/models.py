@@ -22,7 +22,7 @@ class Task(behaviours.Timestampable):
     board = models.ForeignKey(
         Board, related_name="tasks", on_delete=models.PROTECT
     )
-    name = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
     description = models.TextField()
     reporter = models.ForeignKey(
         User, related_name="reported_tasks", on_delete=models.PROTECT

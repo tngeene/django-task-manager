@@ -29,8 +29,8 @@ urlpatterns = [
     ),
     # 3rd party libs urls
     path("api/v1/auth/", include("djoser.urls")),
-    path("api/v1/auth/", include("djoser.urls.jwt")),
     path("api/v1/auth-token/", obtain_auth_token, name="api_token_auth"),
+    path("api/v1/auth/", include("djoser.urls.authtoken")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
