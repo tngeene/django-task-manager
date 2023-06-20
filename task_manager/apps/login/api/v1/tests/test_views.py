@@ -23,7 +23,7 @@ class TestUnauthenticatedUserViewSet:
             "email": "tugrp@example.com",
             "first_name": "New",
             "last_name": "User",
-            "gender": "male",
+            "gender": login_constants.UserGenderChoices.MALE,
             "password": USER_PASSWORD,
         }
 
