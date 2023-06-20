@@ -9,7 +9,15 @@ from task_manager.apps.login import managers
 class UserAccount(AbstractUser):
     email = models.EmailField(unique=True)
     gender = models.CharField(
-        max_length=10, choices=login_constants.GENDER_CHOICES
+        max_length=10,
+        choices=login_constants.UserGenderChoices.choices,
+        null=True,
+        blank=True,
+    )
+    role = models.TextField(
+        max_length=30,
+        choices=login_constants.UserRoleChoices.choices,
+        default=login_constants.UserRoleChoices.SUPPORT_STAFF,
     )
     date_of_birth = models.DateField(null=True, blank=True)
     profile_picture = models.ImageField(

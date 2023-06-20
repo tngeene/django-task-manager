@@ -23,6 +23,7 @@ class CustomUserAdmin(UserAdmin):
                     "last_name",
                     "email",
                     "gender",
+                    "role",
                 )
             },
         ),
@@ -36,9 +37,10 @@ class CustomUserAdmin(UserAdmin):
         "first_name",
         "last_name",
         "gender",
+        "get_role_display",
         "is_active",
     ]
-    list_filter = ("gender", "is_active")
+    list_filter = ("gender", "is_active", "role")
     actions = ["activate", "deactivate"]
 
     @admin.action(description="Deactivate selected users")

@@ -21,3 +21,30 @@ def expected_user_response(user):
         if user.last_login
         else None,
     }
+
+
+@pytest.fixture
+def expected_users_response_one_user(user):
+    return {
+        "count": 1,
+        "next": None,
+        "previous": None,
+        "results": [
+            {
+                "id": user.id,
+                "email": user.email,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "role": user.get_role_display(),
+                "gender": user.get_gender_display(),
+                "date_of_birth": user.date_of_birth.isoformat(),
+                "profile_picture": None,
+                "last_login": None,
+            }
+        ],
+    }
+
+
+@pytest.fixture
+def expected_users_response_current_user(expected_users_response_one_user):
+    return expected_users_response_one_user["results"][0]
