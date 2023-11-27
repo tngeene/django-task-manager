@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 services:
   web:
     build:
@@ -7,16 +7,16 @@ services:
     restart: unless-stopped
     volumes:
       - .:/code
-      - ./task_manager/deployment/gunicorn/logs:/task_manager/deployment/gunicorn/logs
+      - ./task_manager/deploy/gunicorn/logs:/task_manager/deploy/gunicorn/logs
       - static:/code/static
       - media:/code/media
-    # networks:
-    #   - internal
+    networks:
+      - internal
     depends_on:
       - postgres
 
   postgres:
-    build: ./task_manager/deployment/postgres
+    build: ./task_manager/deploy/postgres
     container_name: task_manager_db
     restart: unless-stopped
     expose:
@@ -26,16 +26,25 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
-    # networks:
-    #   - internal
+    networks:
+      - internal
     volumes:
       - pgdata:/var/lib/postgresql/data/
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${DB_USER} -d ${DB_NAME} -h localhost -p 5432"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   pgadmin:
     image: dpage/pgadmin4
     container_name: task_manager_pg_admin
-    # networks:
-    #   - internal
+    networks:
+      - internal
     depends_on:
       - postgres
     ports:
@@ -44,14 +53,21 @@ services:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
     restart: always
+    healthcheck:
+    test: [ "CMD", "curl", "-f", "http://localhost:5055/login" ]
+    interval: 30s
+    timeout: 10s
+    retries: 3
 
   nginx:
     restart: always
-    build: ./task_manager/deployment/nginx
+    build: ./task_manager/deploy/nginx
     container_name: task_manager_web_server
+    networks:
+      - internal
     volumes:
-      - ./task_manager/deployment/nginx/:/etc/nginx/conf.d
-      - ./task_manager/deployment/nginx/logs/:/code/logs/nginx
+      - ./task_manager/deploy/nginx/:/etc/nginx/conf.d
+      - ./task_manager/deploy/nginx/logs/:/code/logs/nginx
       - static:/code/static
       - media:/code/media
     ports:
@@ -60,10 +76,14 @@ services:
       - web
     links:
       - web
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-# networks:
-#   internal:
-
+networks:
+  internal:
 
 volumes:
   pgdata:
