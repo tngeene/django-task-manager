@@ -92,7 +92,7 @@ Health checks have been configured for each container service to ensure they are
 
 3. Pgadmin Service
 
-    docker inspect --format='{{json .State.Health}}' task_manager_db
+    docker inspect --format='{{json .State.Health}}' task_manager_pg_admin
 
 Alternatively, you can run check the health status of all containers by running the command `make container-health-check`
 
