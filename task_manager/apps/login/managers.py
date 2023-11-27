@@ -14,6 +14,4 @@ class UserAccountManager(UserManager):
         return super().create_user(email, email, password, **extra_fields)
 
     def create_superuser(self, email=None, password=None, **extra_fields):
-        return super().create_superuser(
-            email, email, password, **extra_fields
-        )
+        return super().create_superuser(email, email, password, **extra_fields)

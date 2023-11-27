@@ -6,7 +6,6 @@ User = get_user_model()
 
 
 def force_authenticate(request, user: User = None, token: Token = None):
-
     if token:
         test.force_authenticate(request, user=user, token=token)
     else:

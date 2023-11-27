@@ -17,9 +17,7 @@ def expected_user_response(user):
         "last_name": user.last_name,
         "is_active": user.is_active,
         "date_joined": user.date_joined.isoformat(),
-        "last_login": user.last_login.isoformat()
-        if user.last_login
-        else None,
+        "last_login": user.last_login.isoformat() if user.last_login else None,
     }
 
 
