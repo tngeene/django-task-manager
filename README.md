@@ -82,7 +82,7 @@ Once created, edit the `app.py` folder name section to be
 
 Health checks have been configured for each container service to ensure they are running and ready to accept connections.
 
-1. Nginx Services
+1. Nginx Service
 
     docker inspect --format='{{json .State.Health}}' task_manager_web_server
 
