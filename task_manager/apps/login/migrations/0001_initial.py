@@ -8,7 +8,6 @@ import task_manager.apps.login.managers
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -30,9 +29,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "password",
-                    models.CharField(
-                        max_length=128, verbose_name="password"
-                    ),
+                    models.CharField(max_length=128, verbose_name="password"),
                 ),
                 (
                     "last_login",

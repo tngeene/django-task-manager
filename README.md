@@ -64,7 +64,8 @@ Make desired changes then commit the branch.
 
 **If using poetry for dependency management, you can pip freeze them to a `requirements.txt` file by running**
 
-    pip --disable-pip-version-check list --format=freeze > requirements.txt
+    pip --disable-pip-version-check list --format=freeze > requirements.txt or
+    make pip-freeze
 
 ### Creating an App
 
@@ -76,3 +77,28 @@ Make sure to create the `{app_name}` directory before running the command.
 Once created, edit the `app.py` folder name section to be
 
     name = 'task_manager.apps.{app_name}'
+
+## Running Health Checks
+
+Health checks have been configured for each container service to ensure they are running and ready to accept connections.
+
+1. Nginx Service
+
+    docker inspect --format='{{json .State.Health}}' task_manager_web_server
+
+2. Postgres Service
+
+    docker inspect --format='{{json .State.Health}}' task_manager_db
+
+3. Pgadmin Service
+
+    docker inspect --format='{{json .State.Health}}' task_manager_pg_admin
+
+Alternatively, you can run check the health status of all containers by running the command `make container-health-check`
+
+### Ruff Resources
+
+1. <https://docs.astral.sh/ruff/>
+2. <https://pypi.org/project/ruff/>
+3. <https://docs.astral.sh/ruff/configuration/>
+4. <https://blog.jerrycodes.com/ruff-the-python-linter/>
